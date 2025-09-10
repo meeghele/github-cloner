@@ -1,5 +1,11 @@
 # GitHub Cloner
 
+[![CI](https://github.com/meeghele/github-cloner/actions/workflows/ci.yml/badge.svg)](https://github.com/meeghele/github-cloner/actions)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A Python command-line tool that automates the process of cloning all repositories from a GitHub user or organization.
 
 ## Features

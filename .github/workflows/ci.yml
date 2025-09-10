@@ -1,4 +1,4 @@
-name: GitHub Cloner CI
+name: github-cloner-ci
 
 on:
   push:
