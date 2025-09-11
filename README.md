@@ -6,11 +6,11 @@
 
 # GitHub Cloner
 
+A Python command-line tool that automates the process of cloning all repositories from a GitHub user or organization.
+
 <div align="center">
   <img src="images/github-cloner_512.png" alt="GitHub Cloner Logo" width="200"/>
 </div>
-
-A Python command-line tool that automates the process of cloning all repositories from a GitHub user or organization.
 
 ## Features
 
