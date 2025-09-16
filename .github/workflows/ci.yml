@@ -21,35 +21,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Set up Python
+
+    - name: set up python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.12'
-    
-    - name: Cache pip dependencies
+        python-version: '3.11'
+
+    - name: cache pip dependencies
       uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
-    
-    - name: Install dependencies
-      run: make install-dev
-    
-    - name: Run linting
-      run: make lint
-    
-    - name: Run type checking
-      run: make type-check
-    
-    - name: Run basic tests
-      run: make test
-    
-    - name: Run unit tests
-      run: make test-unit
-    
-    - name: Validate script
-      run: make validate
 
+    - name: install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
+
+    - name: run linting
+      run: |
+        flake8 github-cloner.py
+        pylint github-cloner.py
+
+    - name: run type checking
+      run: python3 -m mypy github-cloner.py
+
+    - name: run unit tests
+      run: python3 -m pytest tests/ -v
+
+    - name: validate script functionality
+      run: python3 github-cloner.py --help
