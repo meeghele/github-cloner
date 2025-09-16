@@ -21,6 +21,7 @@ import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
+from enum import Enum
 from typing import TYPE_CHECKING, List, NoReturn, Optional, Union
 
 if TYPE_CHECKING:
@@ -47,18 +48,33 @@ EXIT_GITHUB_ERROR = 30
 EXIT_AUTH_ERROR = 40
 
 
+class CloneMethod(Enum):
+    """Enumeration for git clone methods."""
+
+    HTTPS = "https"
+    SSH = "ssh"
+
+
+class TargetType(Enum):
+    """Enumeration for GitHub target types."""
+
+    ORGANIZATION = "organization"
+    USER = "user"
+
+
 @dataclass
 class Config:
     """Configuration for GitHub cloner."""
 
     url: str
     token: str
-    target_type: str  # "organization" or "user"
+    target_type: TargetType
     target_name: str
     path: str
     disable_root: bool
     dry_run: bool
     exclude: Optional[str]
+    clone_method: CloneMethod = CloneMethod.HTTPS
 
 
 class GitOperations:
@@ -271,7 +287,7 @@ class GitHubCloner:
             # Determine if we're accessing own repositories
             auth_user = self.github_api.get_user()
             is_own_account = (
-                self.config.target_type == "user"
+                self.config.target_type == TargetType.USER
                 and auth_user.login.lower() == self.config.target_name.lower()
             )
 
@@ -281,7 +297,7 @@ class GitHubCloner:
                 "github.AuthenticatedUser.AuthenticatedUser",
             ]
 
-            if self.config.target_type == "organization":
+            if self.config.target_type == TargetType.ORGANIZATION:
                 entity = self.github_api.get_organization(self.config.target_name)
                 Logger.debug(f"found organization: {self.config.target_name}")
                 repos = entity.get_repos()
@@ -308,7 +324,10 @@ class GitHubCloner:
             Logger.info(f"found {len(self.repositories)} repositories to process")
 
             # If no repositories found for a user, provide helpful guidance
-            if len(self.repositories) == 0 and self.config.target_type == "user":
+            if (
+                len(self.repositories) == 0
+                and self.config.target_type == TargetType.USER
+            ):
                 Logger.warn("no repositories found. this could mean:")
                 Logger.warn("- the user has no repositories")
                 Logger.warn(
@@ -321,12 +340,12 @@ class GitHubCloner:
         except github.GithubException as e:
             if e.status == 404:
                 Logger.error(
-                    f"{self.config.target_type.capitalize()} "
+                    f"{self.config.target_type.value.capitalize()} "
                     f"'{self.config.target_name}' not found"
                 )
             else:
                 Logger.error(
-                    f"failed to get {self.config.target_type} repositories: {e}"
+                    f"failed to get {self.config.target_type.value} repositories: {e}"
                 )
             sys.exit(EXIT_GITHUB_ERROR)
         except Exception as e:
@@ -349,7 +368,10 @@ class GitHubCloner:
         Logger.info(f"processing: {repo.full_name}")
 
         # Get repository paths
-        remote_url = repo.ssh_url
+        if self.config.clone_method == CloneMethod.SSH:
+            remote_url = repo.ssh_url
+        else:
+            remote_url = repo.clone_url
         local_path = PathManager.calculate_local_path(
             repo.full_name,
             self.config.path,
@@ -449,6 +471,14 @@ Examples:
         help="Pattern to exclude from repository names",
     )
 
+    parser.add_argument(
+        "--clone-method",
+        dest="clone_method",
+        choices=[method.value for method in CloneMethod],
+        default=CloneMethod.HTTPS.value,
+        help="Clone method: https or ssh (default: https)",
+    )
+
     args = parser.parse_args()
 
     # Handle token
@@ -468,10 +498,10 @@ Examples:
 
     # Determine target type and name
     if args.organization:
-        target_type = "organization"
+        target_type = TargetType.ORGANIZATION
         target_name = args.organization
     else:  # args.user must be set due to mutually exclusive group
-        target_type = "user"
+        target_type = TargetType.USER
         target_name = args.user
 
     return Config(
@@ -483,6 +513,7 @@ Examples:
         disable_root=args.disable_root,
         dry_run=args.dry_run,
         exclude=args.exclude,
+        clone_method=CloneMethod(args.clone_method),
     )
 
 

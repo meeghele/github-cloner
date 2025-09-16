@@ -61,6 +61,7 @@ Set your GitHub token using one of these methods:
 | `-d` | `--dry-run` | List repositories without cloning |
 | `-e` | `--exclude` | Exclude repositories containing this pattern |
 | | `--disable-root` | Don't create organization/user folder |
+| | `--clone-method` | Clone method: `https` or `ssh` (default: `https`) |
 | | `--url` | GitHub API URL for Enterprise (default: `https://api.github.com`) |
 | `-h` | `--help` | Show help message and exit |
 
@@ -94,6 +95,11 @@ python github-cloner.py -o myorg --exclude archived
 **Clone without creating root folder:**
 ```bash
 python github-cloner.py -o myorg --disable-root
+```
+
+**Use SSH for cloning:**
+```bash
+python github-cloner.py -o myorg --clone-method ssh
 ```
 
 **Use GitHub Enterprise:**

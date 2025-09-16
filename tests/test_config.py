@@ -31,29 +31,31 @@ class TestConfig:
         config = gc.Config(
             url='https://api.github.com',
             token='test-token',
-            target_type='organization',
+            target_type=gc.TargetType.ORGANIZATION,
             target_name='test-org',
             path='/test/path',
             disable_root=False,
             dry_run=False,
-            exclude='repo1'
+            exclude='repo1',
+            clone_method=gc.CloneMethod.SSH
         )
         
         assert config.url == 'https://api.github.com'
         assert config.token == 'test-token'
-        assert config.target_type == 'organization'
+        assert config.target_type == gc.TargetType.ORGANIZATION
         assert config.target_name == 'test-org'
         assert config.path == '/test/path'
         assert config.disable_root is False
         assert config.dry_run is False
         assert config.exclude == 'repo1'
+        assert config.clone_method == gc.CloneMethod.SSH
     
     def test_config_defaults(self):
         """Test Config with None exclude."""
         config = gc.Config(
             url='https://api.github.com',
             token='test-token',
-            target_type='user',
+            target_type=gc.TargetType.USER,
             target_name='test-user',
             path='/test/path',
             disable_root=False,
@@ -64,6 +66,7 @@ class TestConfig:
         assert config.exclude is None
         assert config.disable_root is False
         assert config.dry_run is False
+        assert config.clone_method == gc.CloneMethod.HTTPS  # default value
 
 
 class TestArgumentParsing:
@@ -81,7 +84,7 @@ class TestArgumentParsing:
             config = gc.parse_arguments()
             
         assert config.token == 'test-token'
-        assert config.target_type == 'organization'
+        assert config.target_type == gc.TargetType.ORGANIZATION
         assert config.target_name == 'test-org'
         assert config.path == '/test/path'
         assert config.url == 'https://api.github.com'
@@ -101,7 +104,7 @@ class TestArgumentParsing:
             config = gc.parse_arguments()
             
         assert config.token == 'test-token'
-        assert config.target_type == 'user'
+        assert config.target_type == gc.TargetType.USER
         assert config.target_name == 'test-user'
         assert config.path == '/test/path'
         assert config.url == 'https://api.github.com'
@@ -126,7 +129,7 @@ class TestArgumentParsing:
             
         assert config.url == 'https://github.example.com/api/v3'
         assert config.token == 'test-token'
-        assert config.target_type == 'organization'
+        assert config.target_type == gc.TargetType.ORGANIZATION
         assert config.target_name == 'test-org'
         assert config.path == '/test/path'
         assert config.exclude == 'repo1'
@@ -150,7 +153,7 @@ class TestArgumentParsing:
             
         assert config.url == 'https://github.example.com/api/v3'
         assert config.token == 'test-token'
-        assert config.target_type == 'user'
+        assert config.target_type == gc.TargetType.USER
         assert config.target_name == 'test-user'
         assert config.path == '/test/path'
         assert config.exclude == 'repo1'
@@ -169,7 +172,7 @@ class TestArgumentParsing:
             config = gc.parse_arguments()
             
         assert config.token == 'env-token'
-        assert config.target_type == 'organization'
+        assert config.target_type == gc.TargetType.ORGANIZATION
         assert config.target_name == 'test-org'
     
     def test_parse_args_missing_token_no_env(self):

@@ -31,7 +31,7 @@ class TestGitHubCloner:
         config = gc.Config(
             url='https://api.github.com',
             token='test-token', 
-            target_type='organization',
+            target_type=gc.TargetType.ORGANIZATION,
             target_name='test-org',
             path='/test/path',
             disable_root=False,
@@ -55,7 +55,7 @@ class TestGitHubCloner:
         config = gc.Config(
             url='https://api.github.com',
             token='test-token',
-            target_type='organization',
+            target_type=gc.TargetType.ORGANIZATION,
             target_name='test-org', 
             path='/test/path',
             disable_root=False,
@@ -80,7 +80,7 @@ class TestGitHubCloner:
         config = gc.Config(
             url='https://api.github.com',
             token='test-token',
-            target_type='organization',
+            target_type=gc.TargetType.ORGANIZATION,
             target_name='test-org',
             path='/nonexistent/path',
             disable_root=False,
@@ -102,7 +102,7 @@ class TestGitHubCloner:
         config = gc.Config(
             url='https://api.github.com',
             token='test-token',
-            target_type='organization',
+            target_type=gc.TargetType.ORGANIZATION,
             target_name='test-org',
             path='/test/path', 
             disable_root=False,
@@ -128,7 +128,7 @@ class TestGitHubCloner:
         config = gc.Config(
             url='https://api.github.com',
             token='invalid-token',
-            target_type='organization',
+            target_type=gc.TargetType.ORGANIZATION,
             target_name='test-org',
             path='/test/path',
             disable_root=False,
@@ -150,7 +150,7 @@ class TestGitHubCloner:
         config = gc.Config(
             url='https://api.github.com',
             token='test-token',
-            target_type='organization',
+            target_type=gc.TargetType.ORGANIZATION,
             target_name='test-org',
             path='/test/path',
             disable_root=False,
@@ -175,7 +175,7 @@ class TestGitHubCloner:
         config = gc.Config(
             url='https://api.github.com',
             token='test-token',
-            target_type='organization',
+            target_type=gc.TargetType.ORGANIZATION,
             target_name='test-org',
             path='/test/path',
             disable_root=False,
@@ -200,7 +200,7 @@ class TestGitHubCloner:
         config = gc.Config(
             url='https://api.github.com',
             token='test-token',
-            target_type='organization',
+            target_type=gc.TargetType.ORGANIZATION,
             target_name='test-org',
             path='/test/path',
             disable_root=False,
@@ -222,7 +222,7 @@ class TestUserVsOrganization:
         config = gc.Config(
             url='https://api.github.com',
             token='test-token',
-            target_type='user',
+            target_type=gc.TargetType.USER,
             target_name='test-user',
             path='/test/path',
             disable_root=False,
@@ -233,7 +233,7 @@ class TestUserVsOrganization:
         cloner = gc.GitHubCloner(config)
         
         assert cloner.config == config
-        assert cloner.config.target_type == 'user'
+        assert cloner.config.target_type == gc.TargetType.USER
         assert cloner.config.target_name == 'test-user'
         assert cloner.github_api is None
         assert cloner.repositories == []
@@ -267,7 +267,7 @@ class TestUserVsOrganization:
         config = gc.Config(
             url='https://api.github.com',
             token='test-token',
-            target_type='user',
+            target_type=gc.TargetType.USER,
             target_name='test-user',
             path='/test/path',
             disable_root=False,
@@ -305,7 +305,7 @@ class TestUserVsOrganization:
         config = gc.Config(
             url='https://api.github.com',
             token='test-token',
-            target_type='user',
+            target_type=gc.TargetType.USER,
             target_name='test-user',
             path='/test/path',
             disable_root=False,
@@ -341,7 +341,7 @@ class TestUserVsOrganization:
         config = gc.Config(
             url='https://api.github.com',
             token='test-token',
-            target_type='organization',
+            target_type=gc.TargetType.ORGANIZATION,
             target_name='test-org',
             path='/test/path',
             disable_root=False,
