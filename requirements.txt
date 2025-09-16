@@ -1,0 +1,10 @@
+PyGithub>=2.8.1
+colorama>=0.4.6
+types-colorama>=0.4.15.20240311
+
+# Testing dependencies
+pytest>=7.4.0
+pytest-mock>=3.11.1
+pytest-cov>=4.1.0
+pytest-xdist>=3.3.1
+coverage>=7.2.7
